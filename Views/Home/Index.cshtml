@@ -1,16 +1,18 @@
-﻿@using RandomPasscode
+﻿<!-- This has to be linked on the top of the cshtml or else session will never ever work -->
+@using Microsoft.AspNetCore.Http
+
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Random Passcode";
 }
 
 <h1>
     Random passcode (passcode #
-    @Model
+    @Context.Session.GetInt32("Counter")
     )
 </h1>
 <div class="randNum">
     <h1>
-        @ViewBag.RandomString
+        @Context.Session.GetString("RandomString")
     </h1>
 </div>
-
+<a href="generate" class="btn btn-primary btn-lg" role="button">Generate</a>

@@ -11,25 +11,21 @@ namespace RandomPasscode.Controllers
 {
     public class HomeController : Controller
     {
-        public string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
         [HttpGet("")]
         public IActionResult Index()
         {
+            ////if our counter is null instantiate it at one and generate a random string
             if (HttpContext.Session.GetInt32("Counter") == null)
             {
                 HttpContext.Session.SetInt32("Counter", 1);
                 int? IntVariable = HttpContext.Session.GetInt32("Counter");
-                string OurString = RandomString(14);
-                ViewBag.RandomString = OurString;
-                return View(IntVariable); 
+                HttpContext.Session.SetString("RandomString", RandomString(14));
+                return View(); 
             }
             else
             {
-                int? IntVariable = HttpContext.Session.GetInt32("Counter");
-                string OurString = HttpContext.Session.GetString("RandomString");
-                ViewBag.RandomString = OurString;
-                return View(IntVariable);
+                ///if counter exists just return us to view so we can display the updated randomstring and counter values
+                return View();
             }
         }
 
@@ -41,24 +37,17 @@ namespace RandomPasscode.Controllers
             int counter = IntVariable.GetValueOrDefault() +1;
             HttpContext.Session.SetInt32("Counter", counter);
             ////Generate and set our RandomString value to session
-            string ourString = RandomString(14);
-            HttpContext.Session.SetString("RandomString", ourString);
+            HttpContext.Session.SetString("RandomString", RandomString(14));
             return RedirectToAction("Index");
         }
 
         private static Random random = new Random();
         public static string RandomString(int length)
         {
+            ////Generate a random string of alphanumeric characters of length Length
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
         }
 
         public IActionResult Error()
